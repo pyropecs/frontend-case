@@ -6,31 +6,29 @@ const inputError = document.querySelector("#input-error");
 const saveBtn = document.querySelector("#save-btn-id");
 const deleteButton = document.querySelector("#delete-all");
 const cancelBtn = document.querySelector("#cancel-btn");
- const radio_btns = document.querySelectorAll(`input[type='radio'][name='radio_choices']`);
+const radio_btns = document.querySelectorAll(
+  `input[type='radio'][name='radio_choices']`
+);
 let selectedTasks = [];
-let selectedValue = "all"
+let selectedValue = "all";
 document.addEventListener("DOMContentLoaded", renderTasks);
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
 // statusId.addEventListener("change", filterTodos);
 cancelBtn.addEventListener("click", cancelEditTask);
-cancelBtn.title = "Cancel the edit"
+cancelBtn.title = "Cancel the edit";
 deleteButton.addEventListener("click", deleteAll);
 
 input.addEventListener("input", removeError);
 input.addEventListener("focus", removeError);
 
-
-
 // to add event listeners to select radio buttons
 for (let target of radio_btns) {
-	target.addEventListener(`change`, () => {
-    selectedValue = target.value
-    renderTasks()
-	});
+  target.addEventListener(`change`, () => {
+    selectedValue = target.value;
+    renderTasks();
+  });
 }
-
-
 
 function submitForm(event) {
   //to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
@@ -87,11 +85,10 @@ function submitEditForm(trimmedInput, editIndex) {
 function renderTasks() {
   //get the tasks from localstorage and create the taskcards and append into todolist container according to the selected value
   todoList.innerHTML = "";
-  
+
   const todos = getTodoFromLocalStorage();
 
   if (todos.length === 0) {
-  
     noTaskFound();
   } else {
     removeNoTaskFound();
@@ -103,8 +100,6 @@ function renderTasks() {
       );
 
       todoList.append(taskCard);
-
-     
     });
   }
 
@@ -116,10 +111,7 @@ function removeError(e) {
   //to remove already error in the input box
 
   inputError.innerText = "";
-
 }
-
-
 
 function noTaskFound() {
   //to append the paragraph tag content having "no tasks found"
@@ -149,7 +141,7 @@ function createTask(taskName) {
     created_at: getCurrentTime(),
     updated_at: getDefaultTime(),
   };
-selectedTasks =[]
+  selectedTasks = [];
   saveTodoToLocalStorage(task);
   removeNoTaskFound();
   renderTasks();
@@ -195,7 +187,7 @@ function createToDoButtons(isCompleted) {
     "delete button",
     "Delete task"
   );
-  if(isCompleted){
+  if (isCompleted) {
     const completedButton = createIconButton(
       "complete",
       "complete-btn-id",
@@ -204,13 +196,15 @@ function createToDoButtons(isCompleted) {
       "Undo the completed task"
     );
     btnGroup.append(completedButton, editButton, deleteButton);
-  }else{
-    const completeBtn = createIconButton( "complete",
+  } else {
+    const completeBtn = createIconButton(
+      "complete",
       "complete-btn-id",
       "./Images/checkFill.png",
       "complete icon",
-      "Complete task")
-      btnGroup.append(completeBtn, editButton, deleteButton);
+      "Complete task"
+    );
+    btnGroup.append(completeBtn, editButton, deleteButton);
   }
 
   return btnGroup;
@@ -263,7 +257,7 @@ function createCheckbox() {
   checkInput.type = "checkbox";
   checkInput.setAttribute("id", "select-checkbox");
   checkInput.classList.add("completed");
-checkInput.title = "Select the task"
+  checkInput.title = "Select the task";
   checkBoxContainer.append(checkInput);
   return checkBoxContainer;
 }
@@ -300,19 +294,17 @@ function operations(e) {
   }
   if (target.id === "edit-btn-id") {
     //to handle the clicking edit button behaviour
-    
-    if(checkInputNotExist()){
+
+    if (checkInputNotExist()) {
       editTask(target);
     }
-   
   }
 
   if (target.id === "delete-btn-id") {
     //to handle the delete button behaviour
-   
+
     if (confirm("Do you want to delete the mentioned task")) {
       deleteTask(target);
-    
     }
   }
   if (target.id === "complete-btn-id") {
@@ -320,22 +312,24 @@ function operations(e) {
   }
 }
 
-function checkInputNotExist(){
+function checkInputNotExist() {
   // to check that confirmation pop up will be shown when user clicks edit button when input field has some value
-  const value = input.value
-  if(value.length > 0){
-   return confirm("The input value will be erased if you click the edit button")
+  const value = input.value;
+  if (value.length > 0) {
+    return confirm(
+      "The input value will be erased if you click the edit button"
+    );
   }
-  return true
+  return true;
 }
 function editTask(target) {
   //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index
   const todoCard = target.parentNode.parentNode.parentNode;
-  const completed = todoCard.getAttribute("completed")
-  
-  if(completed === null){
+  const completed = todoCard.getAttribute("completed");
+
+  if (completed === null) {
     saveBtn.innerText = "Save";
-    saveBtn.title="Save the task"
+    saveBtn.title = "Save the task";
     const taskName = todoCard.querySelector("#task-name-id");
     const editIndex = todoCard.getAttribute("index");
     input.value = taskName.value;
@@ -344,20 +338,17 @@ function editTask(target) {
     input.focus();
     cancelBtn.classList.remove("hide");
     cancelBtn.classList.add("block");
-  
   }
-
 }
 function cancelEditTask(e) {
-
   if (confirm("Do you want to cancel the edit")) {
     input.value = "";
     input.setAttribute("edit", false);
     input.removeAttribute("edit-index");
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
-    saveBtn.innerText ="Add"
-    saveBtn.title = "Add the task"
+    saveBtn.innerText = "Add";
+    saveBtn.title = "Add the task";
   }
 
   // e.stopPropagation()
@@ -371,8 +362,8 @@ function deleteTask(target) {
   if (isEdit === "true") {
     input.value = "";
     input.setAttribute("edit", false);
-    saveBtn.innerText ="Add"
-    input.removeAttribute("edit-index")
+    saveBtn.innerText = "Add";
+    input.removeAttribute("edit-index");
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
   }
@@ -383,7 +374,7 @@ function deleteTask(target) {
 function isTaskCompleted(target) {
   // traverse the parent element from the checkbox completed and query select the task name element set the respective attributes if its completed or not and edit and update in the local storage
   const todoCard = target.parentNode.parentNode.parentNode;
-  
+
   const taskId = todoCard.getAttribute("index");
   const taskName = todoCard.querySelector("#task-name-id");
 
@@ -394,34 +385,27 @@ function isTaskCompleted(target) {
     ...currentTodo,
     completed: !isCompleted,
   };
-const newCompleted = !isCompleted
+  const newCompleted = !isCompleted;
 
   if (newCompleted) {
-      
     taskName.classList.add("opacity");
-   
- 
-  
-  } else{
-   
-
-    taskName.classList.remove("opacity")
-
-  };
+  } else {
+    taskName.classList.remove("opacity");
+  }
   updateTodotoLocalStorage(newTodo);
   renderTasks();
 }
 
 function filterTodos() {
   //to handle the select functionality with 3 states "completed" ,"assigned","all"
- 
+
   const todoCards = document.querySelectorAll(".todo-card");
   const p = document.querySelector("#no-tasks-id");
-  if(todoCards.length !== 0 ){
+  if (todoCards.length !== 0) {
     removeNoTaskFound();
   }
-  if(p && selectedValue !=="all"){
-    removeNoTaskFound()
+  if (p && selectedValue !== "all") {
+    removeNoTaskFound();
   }
 
   if (selectedValue === "completed") {
@@ -499,7 +483,7 @@ function saveTodoToLocalStorage(task) {
   //to get the todos from localstorage and add new task and save to the local storage with key "todos"
   const todos = getTodoFromLocalStorage();
   todos.push(task);
-  localStorage.setItem("todoss", JSON.stringify(todos));
+  localStorage.setItem("todos", JSON.stringify(todos));
 }
 function updateTodotoLocalStorage(task) {
   //to update the existing todo in the local storage
@@ -576,18 +560,16 @@ function getNextIndexFromLocalStorage() {
 
 function deleteAll() {
   //to delete the selected task from the local storage
-  
+
   if (confirm("Do you want to delete selected tasks ?")) {
-    if(checkInputNotExist()){
+    if (checkInputNotExist()) {
       cancelBtn.classList.remove("block");
       cancelBtn.classList.add("hide");
-      saveBtn.innerText = "Add"
-          deleteSelectedFromLocalStorage(selectedTasks);
+      saveBtn.innerText = "Add";
+      deleteSelectedFromLocalStorage(selectedTasks);
       selectedTasks = [];
       renderTasks();
     }
-
-    
   }
 }
 
@@ -671,4 +653,3 @@ function validateMinimumCharacters(text) {
     return true;
   } else return "Must be more than 3 characters";
 }
-
